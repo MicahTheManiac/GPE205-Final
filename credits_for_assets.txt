@@ -1,0 +1,5 @@
+GPE205 "COLONY" Final Project
+- Attributions -
+
+Voxel Ship Models from 'maxparata':
+https://maxparata.itch.io/voxel-spaceships

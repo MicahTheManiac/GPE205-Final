@@ -43,6 +43,12 @@ public class PlayerController : Controller
             pawn.MoveBackward();
         }
 
+        // If not Moving Forward or Backward
+        if (!Input.GetKey(moveFowardKey) && !Input.GetKey(moveBackwardKey))
+        {
+            pawn.mover.ResetPrivateVars();
+        }
+
         // Rotate Clockwise
         if (Input.GetKey(rotateClockwiseKey))
         {

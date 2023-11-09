@@ -8,6 +8,7 @@ public abstract class Pawn : MonoBehaviour
     public Mover mover;
     public Controller controller;
     public Shooter shooter;
+    public GameObject projectilePrefab;
 
     // Movement
     public float accelAmount;

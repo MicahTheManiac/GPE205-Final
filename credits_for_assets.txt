@@ -3,3 +3,6 @@ GPE205 "COLONY" Final Project
 
 Voxel Ship Models from 'maxparata':
 https://maxparata.itch.io/voxel-spaceships
+
+Skybox Spheremaps by 'Space Spheremaps'
+https://space-spheremaps.itch.io/space-spheremaps | https://www.spacespheremaps.com/

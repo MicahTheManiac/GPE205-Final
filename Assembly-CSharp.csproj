@@ -61,11 +61,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Classes\Mover.cs" />
     <Compile Include="Assets\Scripts\Components\FollowPlayer.cs" />
+    <Compile Include="Assets\Scripts\Components\Health.cs" />
     <Compile Include="Assets\Scripts\Components\ShipPawn.cs" />
     <Compile Include="Assets\Scripts\Classes\Shooter.cs" />
     <Compile Include="Assets\Scripts\Components\ShipMover.cs" />
     <Compile Include="Assets\Scripts\Classes\Controller.cs" />
     <Compile Include="Assets\Scripts\Components\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Components\DamageOnHit.cs" />
     <Compile Include="Assets\Scripts\Classes\Pawn.cs" />
     <Compile Include="Assets\Scripts\Components\ShipShooter.cs" />
   </ItemGroup>

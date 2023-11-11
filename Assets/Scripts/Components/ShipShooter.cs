@@ -18,6 +18,33 @@ public class ShipShooter : Shooter
 
     public override void Shoot(GameObject projectilePrefab, float force, float damage, float lifespan)
     {
-        throw new System.NotImplementedException();
+        // Instantiate our Projectile
+        GameObject newProjectile = Instantiate(projectilePrefab, transform.position, transform.rotation) as GameObject;
+
+        // Get Damage on Hit
+        DamageOnHit doh = newProjectile.GetComponent<DamageOnHit>();
+
+        // If it has DoH
+        if (doh != null)
+        {
+            // Set damageDone in DoH to value passed in
+            doh.damageDone = damage;
+
+            // Set the owner to the Pawn that shot the Projectile. Otherwise owner is null
+            doh.owner = GetComponent<Pawn>();
+        }
+
+        // Get Projectile Rigidbody
+        Rigidbody rb = newProjectile.GetComponent<Rigidbody>();
+
+        // If it has Rigidbody
+        if (rb != null)
+        {
+            // Add Force to move Projetile Forward
+            rb.AddForce(transform.forward * force);
+        }
+
+        // Destroy after a set time
+        Destroy(newProjectile, lifespan);
     }
 }

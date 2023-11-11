@@ -6,6 +6,7 @@ public class FollowPlayer : MonoBehaviour
 {
     public Transform target;
     public float smoothSpeed = 0.125f;
+    public bool lookAtTarget = true;
     public Vector3 offset = new Vector3(0, 20, -15);
 
     // Start is called before the first frame update
@@ -23,7 +24,10 @@ public class FollowPlayer : MonoBehaviour
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
 
-        // Always look at target
-        transform.LookAt(target);
+        // Look at Target
+        if (lookAtTarget)
+        {
+            transform.LookAt(target);
+        }
     }
 }

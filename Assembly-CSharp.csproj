@@ -59,8 +59,10 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Classes\AIController.cs" />
     <Compile Include="Assets\Scripts\Classes\Mover.cs" />
     <Compile Include="Assets\Scripts\Components\FollowPlayer.cs" />
+    <Compile Include="Assets\Scripts\Components\ColonyShipAI.cs" />
     <Compile Include="Assets\Scripts\Components\Health.cs" />
     <Compile Include="Assets\Scripts\Components\ShipPawn.cs" />
     <Compile Include="Assets\Scripts\Classes\Shooter.cs" />

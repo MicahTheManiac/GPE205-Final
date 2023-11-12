@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7840401166548667922}
   - component: {fileID: 4640628386711216566}
-  - component: {fileID: 1390644711348960186}
+  - component: {fileID: 1665286491287639970}
+  - component: {fileID: 592683407508767453}
+  - component: {fileID: 2996088451033382067}
   m_Layer: 0
   m_Name: ColonyShip
   m_TagString: Untagged
@@ -51,7 +53,7 @@ MonoBehaviour:
   maxHealth: 100
   drawIndicator: 0
   indicatorImg: {fileID: 0}
---- !u!114 &1390644711348960186
+--- !u!114 &1665286491287639970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -60,13 +62,44 @@ MonoBehaviour:
   m_GameObject: {fileID: 2320079825471339378}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476fccfd3d6bed0438daa78beb2e2adf, type: 3}
+  m_Script: {fileID: 11500000, guid: 872f110e87d6df94eb76f190593d3452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  smoothSpeed: 0.75
-  lookAtTarget: 0
-  offset: {x: -15, y: 0, z: -10}
+  mover: {fileID: 0}
+  controller: {fileID: 0}
+  shooter: {fileID: 0}
+  projectilePrefab: {fileID: 0}
+  accelAmount: 2
+  moveSpeed: 6
+  turnSpeed: 10
+  shotsPerSecond: 2
+  fireForce: 1000
+  damageDone: 25
+  projectileLifespan: 10
+--- !u!114 &592683407508767453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2320079825471339378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ae49c23894d934a927735fe4797ac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2996088451033382067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2320079825471339378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42a21ea0e3f4e14888db9052cdc4f32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2888339148752158780
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class ShipPawn : Pawn
 {
+    // Disable/Enable Guns
+    public bool gunsEnabled = true;
+
+    // Private Variables
     private float secondsPerShot;
     private float shootEventTime;
 
@@ -63,14 +67,18 @@ public class ShipPawn : Pawn
     // Shooting
     public override void Shoot()
     {
-        // Check our Event Time
-        if (Time.time >= shootEventTime)
+        // See if Guns are Enabled
+        if (gunsEnabled)
         {
-            Debug.Log("Shots Fired!");
-            shootEventTime = Time.time + secondsPerShot;
+            // Check our Event Time
+            if (Time.time >= shootEventTime)
+            {
+                Debug.Log("Shots Fired!");
+                shootEventTime = Time.time + secondsPerShot;
 
-            // Shoot Projectile
-            shooter.Shoot(projectilePrefab, fireForce, damageDone, projectileLifespan);
+                // Shoot Projectile
+                shooter.Shoot(projectilePrefab, fireForce, damageDone, projectileLifespan);
+            }
         }
     }
 }

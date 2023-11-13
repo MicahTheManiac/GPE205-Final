@@ -62,9 +62,12 @@
     <Compile Include="Assets\Scripts\Classes\AIController.cs" />
     <Compile Include="Assets\Scripts\Classes\Mover.cs" />
     <Compile Include="Assets\Scripts\Components\FollowPlayer.cs" />
+    <Compile Include="Assets\Scripts\Components\GenericEnemyAI.cs" />
     <Compile Include="Assets\Scripts\Components\ColonyShipAI.cs" />
     <Compile Include="Assets\Scripts\Components\Health.cs" />
+    <Compile Include="Assets\Scripts\LevelManager.cs" />
     <Compile Include="Assets\Scripts\Components\ShipPawn.cs" />
+    <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Classes\Shooter.cs" />
     <Compile Include="Assets\Scripts\Components\ShipMover.cs" />
     <Compile Include="Assets\Scripts\Classes\Controller.cs" />

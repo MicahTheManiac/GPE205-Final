@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class ShipShooter : Shooter
 {
+    public Transform firePoint;
+
     // Start is called before the first frame update
     public override void Start()
     {
-        // Do Nothing
+        if (firePoint == null)
+        {
+            firePoint = transform;
+        }
     }
 
     // Update is called once per frame
@@ -19,7 +24,7 @@ public class ShipShooter : Shooter
     public override void Shoot(GameObject projectilePrefab, float force, float damage, float lifespan)
     {
         // Instantiate our Projectile
-        GameObject newProjectile = Instantiate(projectilePrefab, transform.position, transform.rotation) as GameObject;
+        GameObject newProjectile = Instantiate(projectilePrefab, firePoint.position, transform.rotation) as GameObject;
 
         // Get Damage on Hit
         DamageOnHit doh = newProjectile.GetComponent<DamageOnHit>();

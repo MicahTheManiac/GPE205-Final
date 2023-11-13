@@ -5,7 +5,7 @@ using UnityEngine;
 public class AIController : Controller
 {
     // AI States
-    public enum AIState { Idle, Seek, Chase, Attack };
+    public enum AIState { Idle, Seek, Chase, Attack, Avoid };
     public AIState currentState;
 
     // Targets
@@ -13,19 +13,31 @@ public class AIController : Controller
     public GameObject activeTarget; // Active meaning our Player taking more Priority
 
     // Distance Variables
-    public float trackingRange = 100.0f;
-    public float attackingRange = 30.0f;
+    public float trackingRange = 120.0f;
+    public float attackingRange = 50.0f;
+    public float avoidanceRange = 30.0f;
     public float fov = 60.0f;
 
     // Raycasting
     public LayerMask layerToRaycast;
     Ray lineOfSite; // This is Private
 
+    // Private Vars
+    private float pawnMoveSpeedCache;
+    private float pawnTurnSpeedCache;
+
     // Start is called before the first frame update
     public override void Start()
     {
         // Set Ray **This is Important**
         lineOfSite = new Ray(transform.position, transform.forward);
+
+        // Check for Pawn
+        CheckForPawn();
+
+        // Cache Speed
+        pawnMoveSpeedCache = pawn.moveSpeed;
+        pawnTurnSpeedCache = pawn.turnSpeed;
 
         // Set State to Idle
         currentState = AIState.Idle;
@@ -37,6 +49,9 @@ public class AIController : Controller
     // Update is called once per frame
     public override void Update()
     {
+        // Check for Pawn
+        CheckForPawn();
+
         // Call Base Update
         base.Update();
     }
@@ -59,42 +74,40 @@ public class AIController : Controller
                 // Do Idle
                 DoIdleState();
 
-                // If we have a Passive Target
-                if (passiveTarget != null)
-                {
-                    ChangeState(AIState.Seek);
-                }
-
                 // If we detect Active Target
                 if (IsDistanceLessThan(activeTarget, trackingRange))
                 {
                     ChangeState(AIState.Chase);
+                }
+                // If we have a Passive Target
+                else if (passiveTarget != null)
+                {
+                    ChangeState(AIState.Seek);
                 }
                 break;
 
             // SEEK STATE
             case AIState.Seek:
-                // Do Seek
-                DoSeekState();
-
                 // If we detect Active Target
                 if (IsDistanceLessThan(activeTarget, trackingRange))
                 {
+                    Debug.Log("This is working.");
                     ChangeState(AIState.Chase);
                 }
-
                 // If we are in Range of Passive (Let Attack Handle CanSee)
-                if (IsDistanceLessThan(passiveTarget, attackingRange))
+                else if (IsDistanceLessThan(passiveTarget, attackingRange))
                 {
                     ChangeState(AIState.Attack);
+                }
+                // Do Seek
+                else
+                {
+                    DoSeekState();
                 }
                 break;
 
             // CHASE STATE
             case AIState.Chase:
-                // Do Chase
-                DoChaseState();
-
                 // If we are in Attack Range of Active
                 if (IsDistanceLessThan(activeTarget, attackingRange))
                 {
@@ -106,23 +119,64 @@ public class AIController : Controller
                 {
                     ChangeState(AIState.Idle); // Will send us to Seek
                 }
+                // Do Chase
+                DoChaseState();
+
                 break;
 
             // ATTACK STATE
             case AIState.Attack:
+                // Check Avoidance to See if we should Swoop
+                if (IsDistanceLessThan(activeTarget, avoidanceRange) || IsDistanceLessThan(passiveTarget, avoidanceRange))
+                {
+                    ChangeState(AIState.Avoid);
+                }
+
+                // Attack Active Target
+                if (CanSee(activeTarget, fov))
+                {
+                    // Do Attack: Pass in Active
+                    DoAttackState(activeTarget);
+                }
                 // Attack Passive Target
-                if (CanSee(passiveTarget, fov))
+                else if (CanSee(passiveTarget, fov))
                 {
                     // Do Attack: Pass in Passive
                     DoAttackState(passiveTarget);
-                    Debug.Log("Working");
                 }
-                // Attack Active Target
-                //else if (CanSee(activeTarget, fov))
-                //{
-                //    // Do Attack: Pass in Active
-                //    DoAttackState(activeTarget);
-                //}
+                // Else Send us Back to Idle (Idle will sort it out)
+                else
+                {
+                    ChangeState(AIState.Chase);
+                }
+                break;
+
+            // AVOID STATE
+            case AIState.Avoid:
+                // Increase Speed in this state
+                pawn.moveSpeed = pawnMoveSpeedCache + (pawnMoveSpeedCache * 0.5f);
+                pawn.turnSpeed = pawnTurnSpeedCache + (pawnTurnSpeedCache * 0.3f);
+
+                // Avoid Active Target
+                if (IsDistanceLessThan(activeTarget, avoidanceRange))
+                {
+                    // Do Avoid: Pass in Active
+                    DoAvoidState(activeTarget);
+                }
+                // Avoid Passive Target
+                else if (IsDistanceLessThan(passiveTarget, avoidanceRange))
+                {
+                    // Do Avoid: Pass in Passive
+                    DoAvoidState(passiveTarget);
+                }
+                // Else Send us Back to Idle (Idle will sort it out)
+                else
+                {
+                    // Reset Speed
+                    pawn.moveSpeed = pawnMoveSpeedCache;
+                    pawn.turnSpeed = pawnTurnSpeedCache;
+                    ChangeState(AIState.Chase);
+                }
                 break;
         }
     }
@@ -152,7 +206,10 @@ public class AIController : Controller
         // If that Distance is < our FOV
         if (angleToTarget < angle)
         {
-            // Raycast Magic
+            // Bypass Raycasting since it won't work
+            return true;
+
+            /*/ Raycast Magic
             if (Physics.Raycast(lineOfSite, out RaycastHit hit, attackingRange, layerToRaycast))
             {
                 Debug.Log(hit.collider.name);
@@ -172,7 +229,7 @@ public class AIController : Controller
             {
                 Debug.Log("False");
                 return false;
-            }
+            } // end comment block */
         }
         // aTT !< angle
         else
@@ -233,6 +290,28 @@ public class AIController : Controller
 
         // Shoot
         Shoot();
+    }
+
+    protected virtual void DoAvoidState(GameObject target)
+    {
+        // Variables
+        float targetDistance = Vector3.Distance(target.transform.position, pawn.transform.position);
+        float percentOffAvoidDistance = targetDistance / avoidanceRange;
+        float flippedPercentOffAvoidDistance = 1 - percentOffAvoidDistance;
+
+        percentOffAvoidDistance = Mathf.Clamp01(percentOffAvoidDistance * flippedPercentOffAvoidDistance);
+
+        // Find Vector to Target
+        Vector3 vectorToTarget = target.transform.position - pawn.transform.position;
+
+        // Find Vector away from Target by Negating
+        Vector3 vectorAwayFromTarget = -vectorToTarget;
+
+        // Find Vector to Travel Down
+        Vector3 avoidanceVector = vectorAwayFromTarget.normalized * percentOffAvoidDistance;
+
+        // Seek this new Vector
+        Seek(pawn.transform.position + avoidanceVector);
     }
 
     // Seek Function -- Target Position

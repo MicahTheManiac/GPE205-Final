@@ -15,6 +15,12 @@ public class PlayerController : Controller
     // Start is called before the first frame update
     public override void Start()
     {
+        // Add to LevelManager
+        if (LevelManager.instance != null)
+        {
+            LevelManager.instance.playerPawn = this.pawn;
+        }
+
         // Run Base Start
         base.Start();
     }

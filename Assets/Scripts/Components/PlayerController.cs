@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 [System.Serializable]
 public class PlayerController : Controller
@@ -12,12 +14,20 @@ public class PlayerController : Controller
     public KeyCode rotateCounterClockwiseKey;
     public KeyCode shootKey;
 
+    // UI PassThroughs
+    public Slider playerHealth;
+    public TextMeshProUGUI waveText;
+    public TextMeshProUGUI creditsText;
+    public Slider colonyShipHealth;
+    public Slider colonyShipProgress;
+
     // Start is called before the first frame update
     public override void Start()
     {
         // Add to LevelManager
         if (LevelManager.instance != null)
         {
+            LevelManager.instance.playerController = this;
             LevelManager.instance.playerPawn = this.pawn;
         }
 
@@ -30,6 +40,9 @@ public class PlayerController : Controller
     {
         // Process Input
         ProcessInputs();
+
+        // Calculate Health Fill
+        CalculateHealthFill();
 
         // Run Base Update
         base.Update();
@@ -74,4 +87,17 @@ public class PlayerController : Controller
         }
     }
 
+    // Calculate Health Fill
+    private void CalculateHealthFill()
+    {
+        // Get Health Component
+        Health myHealth = pawn.GetComponent<Health>();
+
+        // Perform Calculation and Clamp for good measure
+        float health = myHealth.currentHealth / myHealth.maxHealth;
+        health = Mathf.Clamp01(health);
+
+        // Set Fill
+        playerHealth.value = health;
+    }
 }

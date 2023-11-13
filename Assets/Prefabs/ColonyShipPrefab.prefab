@@ -56,9 +56,10 @@ MonoBehaviour:
   layerToRaycast:
     serializedVersion: 2
     m_Bits: 0
-  currentOffloadProgress: 50
-  maxOffloadProgress: 100
+  currentOffloadProgress: 0
+  maxOffloadProgress: 1
   progressIndicator: {fileID: 654870669501921745}
+  isOffloading: 0
 --- !u!1001 &500122755396036250
 PrefabInstance:
   m_ObjectHideFlags: 0

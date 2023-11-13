@@ -52,7 +52,8 @@ public class Health : MonoBehaviour
     // Die
     public void Die(Pawn source)
     {
-        Destroy(gameObject);
+        //lol
+        Destroy(gameObject, 0.1f);
     }
 
     // Healing

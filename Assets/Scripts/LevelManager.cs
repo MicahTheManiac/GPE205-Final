@@ -31,12 +31,16 @@ public class LevelManager : MonoBehaviour
     public bool doNextWave = false;
 
     // Store Player and Colony Ship Pawns
+    public PlayerController playerController;
+    public ColonyShipAI colonyShipController;
     public Pawn playerPawn;
     public Pawn colonyShipPawn;
     public List<AIController> enemies;
 
     // Private
     private int enemyCount = 0;
+    private float clampedCurrentWave;
+    private float creditsCount = 0;
 
     // Awake event before Start can run
     private void Awake()
@@ -62,6 +66,11 @@ public class LevelManager : MonoBehaviour
             cam.target = playerCtrl.pawn.transform;
         }
 
+        if (GameManager.instance != null)
+        {
+            creditsCount = GameManager.instance.credits;
+        }
+
         // Set State to Idle
         currentState = LevelState.Idle;
     }
@@ -74,6 +83,10 @@ public class LevelManager : MonoBehaviour
 
         // Controls Waves
         MakeDecisions();
+
+        // Update UI Text
+        playerController.waveText.text = ("Wave: " + clampedCurrentWave + " of " + maxWaves);
+        playerController.creditsText.text = ("Credits: " + creditsCount);
     }
 
     // Spawn Entity (Player, Col. Ship, or Enemy)
@@ -158,10 +171,11 @@ public class LevelManager : MonoBehaviour
     {
         if (enemies != null)
         {
-            if (enemies.Count == 0)
+            if (enemies.Count == 0 && colonyShipController.isOffloading == true)
             {
                 // Increment Wave Number
-                currentWave++; ;
+                currentWave++;
+                clampedCurrentWave = Mathf.Clamp(currentWave, 0, maxWaves);
 
                 // Tell to do Next Wave
                 doNextWave = true;

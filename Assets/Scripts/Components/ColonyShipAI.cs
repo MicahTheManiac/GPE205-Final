@@ -7,8 +7,10 @@ public class ColonyShipAI : AIController
 {
     // Variables
     public float currentOffloadProgress = 0;
-    public float maxOffloadProgress = 100;
-    public Image progressIndicator;
+    public float maxOffloadProgress = 1;
+    public bool isOffloading = false;
+
+    private float offloadProgressCap;
 
     // Start is called before the first frame update
     public override void Start()
@@ -16,8 +18,10 @@ public class ColonyShipAI : AIController
         // Add to LevelManager
         if (LevelManager.instance != null)
         {
+            LevelManager.instance.colonyShipController = this;
             LevelManager.instance.colonyShipPawn = this.pawn;
             passiveTarget = LevelManager.instance.destination;
+            maxOffloadProgress = LevelManager.instance.maxWaves;
         }
 
         // Get Radius of Planet
@@ -29,8 +33,9 @@ public class ColonyShipAI : AIController
 
         trackingRange = trackingRange + avgRadius;
 
-        // Set Progress Image
-        CalculateImageFill();
+        // Set Progress & Health
+        CalculateProgressFill();
+        CalculateHealthFill();
 
         // Call Base Start
         base.Start();
@@ -40,6 +45,16 @@ public class ColonyShipAI : AIController
     public override void Update()
     {
         base.Update();
+
+        // Get Progress Cap
+        if (LevelManager.instance != null)
+        {
+            offloadProgressCap = (LevelManager.instance.currentWave / (maxOffloadProgress + 1)) * maxOffloadProgress;
+        }
+
+        // Set Progress & Health
+        CalculateProgressFill();
+        CalculateHealthFill();
 
         // Make Decisions
         MakeDecisions();
@@ -58,6 +73,11 @@ public class ColonyShipAI : AIController
                 if (IsDistanceLessThan(passiveTarget, trackingRange))
                 {
                     Debug.Log("Offloading");
+                    isOffloading = true;
+
+                    // Increase Progress
+                    currentOffloadProgress += 0.1f * Time.deltaTime;
+                    currentOffloadProgress = Mathf.Clamp(currentOffloadProgress, 0, offloadProgressCap);
                 }
                 // If we have a Passive Target
                 else if (passiveTarget != null)
@@ -80,14 +100,42 @@ public class ColonyShipAI : AIController
         }
     }
 
-    // Calculate Image Fill
-    private void CalculateImageFill()
+    // Calculate Progress Fill
+    private void CalculateProgressFill()
     {
         // Perform Calculation and Clamp for good measure
         float progress = currentOffloadProgress / maxOffloadProgress;
         progress = Mathf.Clamp01(progress);
 
         // Set Fill
-        progressIndicator.fillAmount = progress;
+        if (LevelManager.instance != null)
+        {
+            Slider shipProgressIndicator = LevelManager.instance.playerController.colonyShipProgress;
+            if (shipProgressIndicator != null)
+            {
+                shipProgressIndicator.value = progress;
+            }
+        }
+    }
+
+    // Calculate Health Fill
+    private void CalculateHealthFill()
+    {
+        // Get Health Component
+        Health myHealth = pawn.GetComponent<Health>();
+
+        // Perform Calculation and Clamp for good measure
+        float health = myHealth.currentHealth / myHealth.maxHealth;
+        health = Mathf.Clamp01(health);
+
+        // Set Fill
+        if (LevelManager.instance != null)
+        {
+            Slider shipHealthIndicator = LevelManager.instance.playerController.colonyShipHealth;
+            if (shipHealthIndicator != null)
+            {
+                shipHealthIndicator.value = health;
+            }
+        }
     }
 }

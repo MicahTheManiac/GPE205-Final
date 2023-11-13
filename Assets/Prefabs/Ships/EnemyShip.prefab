@@ -231,7 +231,7 @@ MonoBehaviour:
   accelAmount: 4
   moveSpeed: 20
   turnSpeed: 35
-  shotsPerSecond: 3
+  shotsPerSecond: 5
   fireForce: 5000
   damageDone: 5
   projectileLifespan: 5

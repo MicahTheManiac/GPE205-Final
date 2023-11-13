@@ -164,9 +164,11 @@ MonoBehaviour:
   enemySpawns:
   - {fileID: 194546667}
   currentWave: 0
-  maxWaves: 1
+  maxWaves: 5
   waveSetupFinished: 0
   doNextWave: 0
+  playerController: {fileID: 0}
+  colonyShipController: {fileID: 0}
   playerPawn: {fileID: 0}
   colonyShipPawn: {fileID: 0}
   enemies: []

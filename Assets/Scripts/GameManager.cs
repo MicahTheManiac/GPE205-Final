@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Credits == $$ == Score
+    public static GameManager instance;
+
+    // Credits (Score)
     public int credits;
+
+    // Awake event before Start can run
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            // This is the instance
+            instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()

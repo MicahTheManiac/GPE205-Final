@@ -38,6 +38,9 @@ public class PlayerController : Controller
     // Update is called once per frame
     public override void Update()
     {
+        // Check for Pawn
+        CheckForPawn();
+
         // Process Input
         ProcessInputs();
 
@@ -63,7 +66,7 @@ public class PlayerController : Controller
         }
 
         // If not Moving Forward or Backward
-        if (!Input.GetKey(moveFowardKey) && !Input.GetKey(moveBackwardKey))
+        if (!Input.GetKey(moveFowardKey) && !Input.GetKey(moveBackwardKey) && pawn.mover != null)
         {
             pawn.mover.ResetPrivateVars();
         }
@@ -99,5 +102,19 @@ public class PlayerController : Controller
 
         // Set Fill
         playerHealth.value = health;
+    }
+
+    // See if we have our Pawn
+    private void CheckForPawn()
+    {
+        if (pawn == null)
+        {
+            if (LevelManager.instance != null)
+            {
+                LevelManager.instance.DoGameOver();
+            }
+            Destroy(gameObject);
+
+        }
     }
 }

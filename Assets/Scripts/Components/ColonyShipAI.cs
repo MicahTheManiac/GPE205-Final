@@ -44,7 +44,8 @@ public class ColonyShipAI : AIController
     // Update is called once per frame
     public override void Update()
     {
-        base.Update();
+        // Check For Pawn
+        CheckForPawn();
 
         // Get Progress Cap
         if (LevelManager.instance != null)
@@ -58,45 +59,73 @@ public class ColonyShipAI : AIController
 
         // Make Decisions
         MakeDecisions();
+
+        // Call Base Update
+        base.Update();
     }
 
     new void MakeDecisions()
     {
-        switch (currentState)
+        if (pawn != null)
         {
-            // IDLE STATE
-            case AIState.Idle:
-                // Do Idle
-                DoIdleState();
+            switch (currentState)
+            {
+                // IDLE STATE
+                case AIState.Idle:
+                    // Do Idle
+                    DoIdleState();
 
-                // If we are in range of the planet
-                if (IsDistanceLessThan(passiveTarget, trackingRange))
-                {
-                    Debug.Log("Offloading");
-                    isOffloading = true;
+                    // If we are in range of the planet
+                    if (IsDistanceLessThan(passiveTarget, trackingRange))
+                    {
+                        Debug.Log("Offloading");
+                        isOffloading = true;
 
-                    // Increase Progress
-                    currentOffloadProgress += 0.1f * Time.deltaTime;
-                    currentOffloadProgress = Mathf.Clamp(currentOffloadProgress, 0, offloadProgressCap);
-                }
-                // If we have a Passive Target
-                else if (passiveTarget != null)
-                {
-                    ChangeState(AIState.Seek);
-                }
-                break;
+                        // Increase Progress
+                        currentOffloadProgress += 0.25f * Time.deltaTime;
+                        currentOffloadProgress = Mathf.Clamp(currentOffloadProgress, 0, offloadProgressCap);
 
-            // SEEK STATE
-            case AIState.Seek:
-                // If we are in range of the planet
-                if (IsDistanceLessThan(passiveTarget, trackingRange))
-                {
-                    ChangeState(AIState.Idle);
-                }
+                        if (currentOffloadProgress == maxOffloadProgress)
+                        {
+                            if (LevelManager.instance != null)
+                            {
+                                LevelManager.instance.DoGameWin();
+                            }
+                        }
+                    }
+                    // If we have a Passive Target
+                    else if (passiveTarget != null)
+                    {
+                        ChangeState(AIState.Seek);
+                    }
+                    break;
 
-                // Do Seek
-                DoSeekState();
-                break;
+                // SEEK STATE
+                case AIState.Seek:
+                    // If we are in range of the planet
+                    if (IsDistanceLessThan(passiveTarget, trackingRange))
+                    {
+                        ChangeState(AIState.Idle);
+                    }
+
+                    // Do Seek
+                    DoSeekState();
+                    break;
+            }
+        }
+    }
+
+    // See if we have our Pawn
+    new void CheckForPawn()
+    {
+        if (pawn == null)
+        {
+            if (LevelManager.instance != null)
+            {
+                LevelManager.instance.DoGameOver();
+            }
+            Destroy(gameObject);
+
         }
     }
 
@@ -121,20 +150,23 @@ public class ColonyShipAI : AIController
     // Calculate Health Fill
     private void CalculateHealthFill()
     {
-        // Get Health Component
-        Health myHealth = pawn.GetComponent<Health>();
-
-        // Perform Calculation and Clamp for good measure
-        float health = myHealth.currentHealth / myHealth.maxHealth;
-        health = Mathf.Clamp01(health);
-
-        // Set Fill
-        if (LevelManager.instance != null)
+        if (pawn != null)
         {
-            Slider shipHealthIndicator = LevelManager.instance.playerController.colonyShipHealth;
-            if (shipHealthIndicator != null)
+            // Get Health Component
+            Health myHealth = pawn.GetComponent<Health>();
+
+            // Perform Calculation and Clamp for good measure
+            float health = myHealth.currentHealth / myHealth.maxHealth;
+            health = Mathf.Clamp01(health);
+
+            // Set Fill
+            if (LevelManager.instance != null)
             {
-                shipHealthIndicator.value = health;
+                Slider shipHealthIndicator = LevelManager.instance.playerController.colonyShipHealth;
+                if (shipHealthIndicator != null)
+                {
+                    shipHealthIndicator.value = health;
+                }
             }
         }
     }

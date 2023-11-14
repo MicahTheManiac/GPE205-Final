@@ -49,9 +49,6 @@ public class AIController : Controller
     // Update is called once per frame
     public override void Update()
     {
-        // Check for Pawn
-        CheckForPawn();
-
         // Call Base Update
         base.Update();
     }
@@ -66,118 +63,121 @@ public class AIController : Controller
     // Make Decisions
     public void MakeDecisions()
     {
-        // Switch
-        switch (currentState)
+        if (pawn != null)
         {
-            // IDLE STATE
-            case AIState.Idle:
-                // Do Idle
-                DoIdleState();
+            // Switch
+            switch (currentState)
+            {
+                // IDLE STATE
+                case AIState.Idle:
+                    // Do Idle
+                    DoIdleState();
 
-                // If we detect Active Target
-                if (IsDistanceLessThan(activeTarget, trackingRange))
-                {
-                    ChangeState(AIState.Chase);
-                }
-                // If we have a Passive Target
-                else if (passiveTarget != null)
-                {
-                    ChangeState(AIState.Seek);
-                }
-                break;
+                    // If we detect Active Target
+                    if (IsDistanceLessThan(activeTarget, trackingRange))
+                    {
+                        ChangeState(AIState.Chase);
+                    }
+                    // If we have a Passive Target
+                    else if (passiveTarget != null)
+                    {
+                        ChangeState(AIState.Seek);
+                    }
+                    break;
 
-            // SEEK STATE
-            case AIState.Seek:
-                // If we detect Active Target
-                if (IsDistanceLessThan(activeTarget, trackingRange))
-                {
-                    Debug.Log("This is working.");
-                    ChangeState(AIState.Chase);
-                }
-                // If we are in Range of Passive (Let Attack Handle CanSee)
-                else if (IsDistanceLessThan(passiveTarget, attackingRange))
-                {
-                    ChangeState(AIState.Attack);
-                }
-                // Do Seek
-                else
-                {
-                    DoSeekState();
-                }
-                break;
+                // SEEK STATE
+                case AIState.Seek:
+                    // If we detect Active Target
+                    if (IsDistanceLessThan(activeTarget, trackingRange))
+                    {
+                        Debug.Log("This is working.");
+                        ChangeState(AIState.Chase);
+                    }
+                    // If we are in Range of Passive (Let Attack Handle CanSee)
+                    else if (IsDistanceLessThan(passiveTarget, attackingRange))
+                    {
+                        ChangeState(AIState.Attack);
+                    }
+                    // Do Seek
+                    else
+                    {
+                        DoSeekState();
+                    }
+                    break;
 
-            // CHASE STATE
-            case AIState.Chase:
-                // If we are in Attack Range of Active
-                if (IsDistanceLessThan(activeTarget, attackingRange))
-                {
-                    ChangeState(AIState.Attack);
-                }
+                // CHASE STATE
+                case AIState.Chase:
+                    // If we are in Attack Range of Active
+                    if (IsDistanceLessThan(activeTarget, attackingRange))
+                    {
+                        ChangeState(AIState.Attack);
+                    }
 
-                // If we are out of Tracking Range
-                if (!IsDistanceLessThan(activeTarget, trackingRange))
-                {
-                    ChangeState(AIState.Idle); // Will send us to Seek
-                }
-                // Do Chase
-                DoChaseState();
+                    // If we are out of Tracking Range
+                    if (!IsDistanceLessThan(activeTarget, trackingRange))
+                    {
+                        ChangeState(AIState.Idle); // Will send us to Seek
+                    }
+                    // Do Chase
+                    DoChaseState();
 
-                break;
+                    break;
 
-            // ATTACK STATE
-            case AIState.Attack:
-                // Check Avoidance to See if we should Swoop
-                if (IsDistanceLessThan(activeTarget, avoidanceRange) || IsDistanceLessThan(passiveTarget, avoidanceRange))
-                {
-                    ChangeState(AIState.Avoid);
-                }
+                // ATTACK STATE
+                case AIState.Attack:
+                    // Check Avoidance to See if we should Swoop
+                    if (IsDistanceLessThan(activeTarget, avoidanceRange) || IsDistanceLessThan(passiveTarget, avoidanceRange))
+                    {
+                        ChangeState(AIState.Avoid);
+                    }
 
-                // Attack Active Target
-                if (CanSee(activeTarget, fov))
-                {
-                    // Do Attack: Pass in Active
-                    DoAttackState(activeTarget);
-                }
-                // Attack Passive Target
-                else if (CanSee(passiveTarget, fov))
-                {
-                    // Do Attack: Pass in Passive
-                    DoAttackState(passiveTarget);
-                }
-                // Else Send us Back to Idle (Idle will sort it out)
-                else
-                {
-                    ChangeState(AIState.Chase);
-                }
-                break;
+                    // Attack Active Target
+                    if (CanSee(activeTarget, fov))
+                    {
+                        // Do Attack: Pass in Active
+                        DoAttackState(activeTarget);
+                    }
+                    // Attack Passive Target
+                    else if (CanSee(passiveTarget, fov))
+                    {
+                        // Do Attack: Pass in Passive
+                        DoAttackState(passiveTarget);
+                    }
+                    // Else Send us Back to Idle (Idle will sort it out)
+                    else
+                    {
+                        ChangeState(AIState.Chase);
+                    }
+                    break;
 
-            // AVOID STATE
-            case AIState.Avoid:
-                // Increase Speed in this state
-                pawn.moveSpeed = pawnMoveSpeedCache + (pawnMoveSpeedCache * 0.5f);
-                pawn.turnSpeed = pawnTurnSpeedCache + (pawnTurnSpeedCache * 0.3f);
+                // AVOID STATE
+                case AIState.Avoid:
+                    // Increase Speed in this state
+                    pawn.moveSpeed = pawnMoveSpeedCache + (pawnMoveSpeedCache * 0.5f);
+                    pawn.turnSpeed = pawnTurnSpeedCache + (pawnTurnSpeedCache * 0.3f);
 
-                // Avoid Active Target
-                if (IsDistanceLessThan(activeTarget, avoidanceRange))
-                {
-                    // Do Avoid: Pass in Active
-                    DoAvoidState(activeTarget);
-                }
-                // Avoid Passive Target
-                else if (IsDistanceLessThan(passiveTarget, avoidanceRange))
-                {
-                    // Do Avoid: Pass in Passive
-                    DoAvoidState(passiveTarget);
-                }
-                // Else Send us Back to Idle (Idle will sort it out)
-                else
-                {
-                    // Reset Speed
-                    pawn.moveSpeed = pawnMoveSpeedCache;
-                    pawn.turnSpeed = pawnTurnSpeedCache;
-                    ChangeState(AIState.Chase);
-                }
-                break;
+                    // Avoid Active Target
+                    if (IsDistanceLessThan(activeTarget, avoidanceRange))
+                    {
+                        // Do Avoid: Pass in Active
+                        DoAvoidState(activeTarget);
+                    }
+                    // Avoid Passive Target
+                    else if (IsDistanceLessThan(passiveTarget, avoidanceRange))
+                    {
+                        // Do Avoid: Pass in Passive
+                        DoAvoidState(passiveTarget);
+                    }
+                    // Else Send us Back to Idle (Idle will sort it out)
+                    else
+                    {
+                        // Reset Speed
+                        pawn.moveSpeed = pawnMoveSpeedCache;
+                        pawn.turnSpeed = pawnTurnSpeedCache;
+                        ChangeState(AIState.Chase);
+                    }
+                    break;
+            }
         }
     }
 
@@ -246,6 +246,26 @@ public class AIController : Controller
             Debug.Log(gameObject.name + ": Self Destruct, I am missing my Pawn!");
             Destroy(gameObject);
 
+        }
+    }
+
+    public void CheckForTargets()
+    {
+        // If we have no Passive
+        if (passiveTarget == null)
+        {
+            passiveTarget = activeTarget;
+        }
+        // If we have no Active
+        else if (activeTarget == null)
+        {
+            activeTarget = passiveTarget;
+        }
+        // If we have Neither
+        else
+        {
+            //Destroy(pawn);
+            //Destroy(gameObject);
         }
     }
 

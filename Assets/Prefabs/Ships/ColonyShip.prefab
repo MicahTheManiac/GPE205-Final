@@ -54,8 +54,8 @@ MonoBehaviour:
   controller: {fileID: 0}
   shooter: {fileID: 0}
   projectilePrefab: {fileID: 0}
-  accelAmount: 2
-  moveSpeed: 6
+  accelAmount: 3
+  moveSpeed: 12
   turnSpeed: 10
   shotsPerSecond: 2
   fireForce: 1200

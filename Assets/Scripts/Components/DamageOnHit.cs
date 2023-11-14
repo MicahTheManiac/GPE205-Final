@@ -12,17 +12,20 @@ public class DamageOnHit : MonoBehaviour
         // Get Health Component from other GameObject that has Trigger we're Entering
         Health otherHealth = other.gameObject.GetComponent<Health>();
 
-        if (other.gameObject != owner.gameObject)
+        if (owner != null)
         {
-            // Only Damage other if it has Health Component
-            if (otherHealth != null)
+            if (other.gameObject != owner.gameObject)
             {
-                // Do Damage
-                otherHealth.TakeDamage(damageDone, owner);
-            }
+                // Only Damage other if it has Health Component
+                if (otherHealth != null)
+                {
+                    // Do Damage
+                    otherHealth.TakeDamage(damageDone, owner);
+                }
 
-            // Destroy this Projectile
-            Destroy(gameObject);
+                // Destroy this Projectile
+                Destroy(gameObject);
+            }
         }
     }
 }

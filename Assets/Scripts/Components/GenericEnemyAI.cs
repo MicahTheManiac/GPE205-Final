@@ -26,24 +26,16 @@ public class GenericEnemyAI : AIController
     // Update is called once per frame
     public override void Update()
     {
-        base.Update();
+        // Check for Pawn
+        CheckForPawn();
 
-        // Remove enemy if Dead
-        Health health = pawn.GetComponent<Health>();
-
-        /*if (health.currentHealth <= 0)
-        {
-            // Add Enemy from LevelManager
-            if (LevelManager.instance != null)
-            {
-                if (LevelManager.instance.enemies != null)
-                {
-                    LevelManager.instance.enemies.Remove(this);
-                }
-            }
-        }*/
+        // Check for Target
+        CheckForTargets();
 
         // Make Decisions
         MakeDecisions();
+
+        // Call Base Update
+        base.Update();
     }
 }

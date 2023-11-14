@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour
     public static LevelManager instance;
 
     // States
-    public enum LevelState { Idle, DoingWave, InWave };
+    public enum LevelState { Idle, DoingWave, InWave, GameFinished };
     public LevelState currentState;
 
     // Player and Colony Ship
@@ -15,7 +15,6 @@ public class LevelManager : MonoBehaviour
     public GameObject colonyShipPrefab;
     public Transform playerSpawn;
     public Transform colonyShipSpawn;
-    public FollowPlayer cam;
 
     // Destination
     public GameObject destination;
@@ -55,21 +54,18 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Register in GameManager
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.levelManager = this;
+        }
+
         // Spawn Player and Colony Ship
         SpawnEntity(playerPrefab, playerSpawn);
         SpawnEntity(colonyShipPrefab, colonyShipSpawn);
 
-        // Set cam Follow Player
-        if (cam != null)
-        {
-            PlayerController playerCtrl = playerPrefab.GetComponent<PlayerController>();
-            cam.target = playerCtrl.pawn.transform;
-        }
-
-        if (GameManager.instance != null)
-        {
-            creditsCount = GameManager.instance.credits;
-        }
+        // Init Credit Count
+        CheckForCredits();
 
         // Set State to Idle
         currentState = LevelState.Idle;
@@ -85,8 +81,11 @@ public class LevelManager : MonoBehaviour
         MakeDecisions();
 
         // Update UI Text
-        playerController.waveText.text = ("Wave: " + clampedCurrentWave + " of " + maxWaves);
-        playerController.creditsText.text = ("Credits: " + creditsCount);
+        if (playerController != null)
+        {
+            playerController.waveText.text = ("Wave: " + clampedCurrentWave + " of " + maxWaves);
+            playerController.creditsText.text = ("Credits: " + creditsCount);
+        }
     }
 
     // Spawn Entity (Player, Col. Ship, or Enemy)
@@ -191,6 +190,39 @@ public class LevelManager : MonoBehaviour
             {
                 enemies.RemoveAt(i);
             }
+        }
+    }
+
+    // Check for Credits
+    public void CheckForCredits()
+    {
+        if (GameManager.instance != null)
+        {
+            creditsCount = GameManager.instance.credits;
+        }
+    }
+
+    public void DoGameOver()
+    {
+        // Change State
+        ChangeState(LevelState.GameFinished);
+
+        // Show Game Over
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.ActivateGameOverScreen();
+        }
+    }
+
+    public void DoGameWin()
+    {
+        // Change State
+        ChangeState(LevelState.GameFinished);
+
+        // Show Game Over
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.ActivateGameWinScreen();
         }
     }
 }

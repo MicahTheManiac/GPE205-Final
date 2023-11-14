@@ -58,7 +58,6 @@ MonoBehaviour:
     m_Bits: 0
   currentOffloadProgress: 0
   maxOffloadProgress: 1
-  progressIndicator: {fileID: 654870669501921745}
   isOffloading: 0
 --- !u!1001 &500122755396036250
 PrefabInstance:
@@ -73,12 +72,8 @@ PrefabInstance:
       value: ColonyShip
       objectReference: {fileID: 0}
     - target: {fileID: 4640628386711216566, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
-      propertyPath: indicatorImg
-      value: 
-      objectReference: {fileID: 365183774544560574}
-    - target: {fileID: 4640628386711216566, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
       propertyPath: drawIndicator
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7840401166548667922, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
       propertyPath: m_LocalPosition.x
@@ -129,28 +124,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
---- !u!114 &365183774544560574 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 279696286000572196, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
-  m_PrefabInstance: {fileID: 500122755396036250}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &654870669501921745 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1145703865585475403, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}
-  m_PrefabInstance: {fileID: 500122755396036250}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1291552065231565112 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1665286491287639970, guid: ab5ea30fa4cfdab4097efb2d6f61e5ea, type: 3}

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Classes\AIController.cs" />
+    <Compile Include="Assets\Scripts\Components\MenuFunctions.cs" />
     <Compile Include="Assets\Scripts\Classes\Mover.cs" />
     <Compile Include="Assets\Scripts\Components\FollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Components\GenericEnemyAI.cs" />

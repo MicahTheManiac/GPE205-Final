@@ -52,7 +52,22 @@ public class Health : MonoBehaviour
     // Die
     public void Die(Pawn source)
     {
-        //lol
+        // If GameManager is Valid
+        if (GameManager.instance != null)
+        {
+            // If LevelManager is Valid
+            if (LevelManager.instance != null)
+            {
+                Pawn playerPawn = LevelManager.instance.playerPawn;
+
+                // If our Source is the Player Pawn
+                if (source = playerPawn)
+                {
+                    GameManager.instance.AddCredits(100);
+                    LevelManager.instance.CheckForCredits();
+                }
+            }
+        }
         Destroy(gameObject, 0.1f);
     }
 

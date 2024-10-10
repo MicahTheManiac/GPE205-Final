@@ -1,4 +1,4 @@
-**Micah Thompson's Final Project Submission**
+# COLONY: Micah Thompson's Final Project Submission
 
 GPE205: Gameplay Programming Concepts
 University of Advancing Technology
